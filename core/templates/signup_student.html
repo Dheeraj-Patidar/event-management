@@ -7,34 +7,65 @@
 <div class="container mt-5">
 <div class="row justify-content-center">
     <div class="col-md-6">
+
+        {% if messages %}
+        {% for message in messages %}
+            <p style="color: green;">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+
     <h2 class="row justify-content-center">Sign-up Form</h2>
-    <form>
-        <div class="mb-3 ">
-            <label for="firstName" class="form-label">First Name</label>
-            <input type="text" name="firstname" class="form-control" id="firstName" placeholder="Enter your first name" required>
-        </div>
+    <form method="post">
+        {%csrf_token%}
+         <label for="id_first_name">First Name:</label>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}
+            <div class="error-message">
+                {{ form.first_name.errors.0 }}
+            </div>
+        {% endif %}
 
-        <div class="mb-3">
-            <label for="lastName" class="form-label">Last Name</label>
-            <input type="text" name="lastname" class="form-control" id="lastName" placeholder="Enter your last name" required>
-        </div>
+        <label for="id_last_name">Last Name:</label>
+        {{ form.last_name }}
+        {% if form.last_name.errors %}
+            <div class="error-message">
+                {{ form.last_name.errors.0 }}
+            </div>
+        {% endif %}
 
-        <div class="mb-3">
-            <label for="email" class="form-label">Email address</label>
-            <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" required>
-        </div>
+        <label for="id_email">Email:</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+            <div class="error-message">
+                {{ form.email.errors.0 }}
+            </div>
+        {% endif %}
 
-        <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Phone Number</label>
-            <input type="tel" name="phonenumber" class="form-control" id="phoneNumber" placeholder="Enter your phone number" required>
-        </div>
+        <label for="id_phone_number">Phone Number:</label>
+        {{ form.phone_number }}
+        {% if form.phone_number.errors %}
+            <div class="error-message">
+                {{ form.phone_number.errors.0 }}
+            </div>
+        {% endif %}
 
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" required>
-        </div>
+        <label for="id_password">Password:</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+            <div class="error-message">
+                {{ form.password.errors.0 }}
+            </div>
+        {% endif %}
 
-        <button type="submit" class="btn btn-primary">Sign Up</button>
+        <label for="id_repassword">Confirm Password:</label>
+        {{ form.repassword }}
+        {% if form.repassword.errors %}
+            <div class="error-message">
+                {{ form.repassword.errors.0 }}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary mt-3">Sign Up</button>
     </form>
     </div>
     </div>
