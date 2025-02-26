@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout as authlogout
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from .forms import StudentForm,LoginForm
+from .forms import StudentForm,LoginForm,StudentEditForm
 User = get_user_model()
 
 
@@ -38,11 +38,8 @@ def Signup_student(request):
 
                 messages.success(request, "Signup successful! You can now log in.")
                 return redirect('login_page')  
-            
-
     else:
         form = StudentForm()
-
     return render(request, "signup_student.html", {"form": form})
 
 
@@ -77,3 +74,16 @@ def logout(request):
 
 def Student_page(request):
     return render(request,"student_dashboard.html")
+
+
+def Student_Profile(request):
+    
+    if request.method=="POST":
+        form=StudentEditForm(request.POST,instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect("student_profile")
+    else:
+        form=StudentEditForm(instance=request.user)
+    return render(request,"student_profile.html",{'form':form})
