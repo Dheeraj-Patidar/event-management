@@ -5,7 +5,14 @@
 
 {%block body%}
 
-
+{% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
 <h1>student dashboard</h1>
 
 {%endblock%}

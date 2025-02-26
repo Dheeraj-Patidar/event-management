@@ -9,10 +9,12 @@
     <div class="col-md-6">
 
         {% if messages %}
-        {% for message in messages %}
-            <p style="color: green;">{{ message }}</p>
-        {% endfor %}
-        {% endif %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
     <h2 class="row justify-content-center">Sign-up Form</h2>
     <form method="post">

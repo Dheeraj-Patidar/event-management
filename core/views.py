@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout as authlogout
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from .forms import UserForm
+from .forms import StudentForm,LoginForm
 User = get_user_model()
 
 
@@ -12,7 +12,7 @@ def index(request):
 
 def Signup_student(request):
     if request.method == "POST":
-        form = UserForm(request.POST)
+        form = StudentForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data.get("first_name")
             last_name = form.cleaned_data.get("last_name")
@@ -41,7 +41,7 @@ def Signup_student(request):
             
 
     else:
-        form = UserForm()
+        form = StudentForm()
 
     return render(request, "signup_student.html", {"form": form})
 
@@ -49,23 +49,31 @@ def Signup_student(request):
 
 
 def Login_page(request):
-    if request.method=="POST":
-        email=request.POST.get('email')
-        password=request.POST.get('password')
-        print(email,password)
-        if not user:
-            return render(request, "login.html")
-        user = authenticate(request, username=email, password=password)
-        print(user)
-        if user is not None:
-            login(request,user)
-            return redirect("student_dashboard")
-        # else:
-        #     return render(request, "login.html")
     
-    return render(request,"login.html")
+    if request.method=="POST":
+        form=LoginForm(request.POST)
+        if form.is_valid():
+            username=form.cleaned_data.get('username')
+            password=form.cleaned_data.get('password')
+            
+            user = authenticate(request, username=username, password=password)
+            print(user)
+            if user is not None:
+                login(request,user)
+                messages.success(request, "Login successful!")
+                return redirect("student_dashboard")
+            else:
+                messages.error(request, "Invalid credentials. Please try again.")
+                
+    else:
+        form=LoginForm()       
+    return render(request,"login.html",{'form':form})
 
 
+def logout(request):
+    authlogout(request)
+    messages.success(request, "You have been logged out successfully.")
+    return redirect("login_page")
 
 def Student_page(request):
-    return render(request,"student_dashboard")
+    return render(request,"student_dashboard.html")
