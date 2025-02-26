@@ -6,14 +6,18 @@ class StudentForm(forms.ModelForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     repassword = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    
+
+    password_regex = RegexValidator(
+    regex=r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+    message="Password must have at least 8 characters, one uppercase, one lowercase, one number, and one special character."
+)
     phone_regex = RegexValidator(
         regex=r'^\d{10}$', message="Phone number must be 10 digits and contain digits only."
 
     )
-
+    
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}),validators=[password_regex])
     phone_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),validators=[phone_regex])
     
     class Meta:
