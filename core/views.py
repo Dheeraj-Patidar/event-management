@@ -5,21 +5,24 @@ from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView, UpdateView, CreateView, ListView
 from django.views.generic.edit import FormView
-
-from .forms import LoginForm, StudentEditForm, StudentForm
+from .models import Event
+from .forms import LoginForm, StudentEditForm, StudentForm, AddEventForm
 from .utils import SendVerificationEmailView
+from django.utils.timezone import now
 
 User = get_user_model()
 signer = TimestampSigner()
 
 
 class HomeView(TemplateView):
+    """home page"""
     template_name = "base.html"
 
 
 class SignupStudentView(FormView):
+    """"student signup """
     template_name = "signup_student.html"
     form_class = StudentForm
     success_url = reverse_lazy("login_page")
@@ -49,6 +52,7 @@ class SignupStudentView(FormView):
 
 
 class VerifyEmailView(View):
+    """sending email verification link"""
     def get(self, request, token, *args, **kwargs):
         try:
             email = signer.unsign(token, max_age=86400)
@@ -69,9 +73,20 @@ class VerifyEmailView(View):
 
 
 class LoginPageView(FormView):
+    """Login view for all roles"""
     template_name = "login.html"
     form_class = LoginForm
-    success_url = reverse_lazy("student_dashboard")
+    
+    def get_success_url(self):
+        user = self.request.user
+        if user.role == "student":
+            return reverse_lazy("student_dashboard")
+        elif user.role == "admin":
+            return reverse_lazy("admin_dashboard")
+        # elif user.role == "staff":
+        #     return reverse_lazy("staff_dashboard")
+        # return reverse_lazy("login_page")
+        return reverse_lazy("login_page")
 
     def form_valid(self, form):
         username = form.cleaned_data["username"]
@@ -83,24 +98,32 @@ class LoginPageView(FormView):
             login(self.request, user)
             messages.success(self.request, "Login successful!")
             return super().form_valid(form)
-
         else:
             messages.error(self.request, "Invalid credentials. Please try again.")
             return self.form_invalid(form)
 
 
 class LogoutView(View):
+    """logout active user"""
     def get(self, request):
         logout(request)
         messages.success(request, "You have been logged out successfully.")
         return redirect(reverse_lazy("login_page"))
 
 
-class StudentView(TemplateView):
+class StudentView(ListView):
+    """student dashboard"""
+    model = Event
     template_name = "student_dashboard.html"
+    context_object_name = "events"
+    
+    def get_queryset(self):
+        """Return only upcoming events"""
+        return Event.objects.filter(date__gte=now()).order_by("date")
 
 
 class StudentProfileView(LoginRequiredMixin, UpdateView):
+    """update student profile"""
     model = User
     form_class = StudentEditForm
     template_name = "student_profile.html"
@@ -111,4 +134,19 @@ class StudentProfileView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Profile updated successfully!")
+        return super().form_valid(form)
+
+
+class AdminView(TemplateView):
+    template_name = 'admin_dashboard.html'
+
+
+class AddEventView(CreateView):
+    model = Event
+    form_class = AddEventForm
+    template_name = 'add_event.html'
+    success_url = reverse_lazy("add_event")
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Event added successfully!")
         return super().form_valid(form)

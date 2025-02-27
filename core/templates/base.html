@@ -45,6 +45,11 @@
                         <a class="nav-link" href="{% url 'student_profile' %}">My Profile</a>
                     </li>
                     {%endif%}
+                    {%if request.user.role == 'admin'%}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'add_event' %}">Events</a>
+                    </li>
+                    {%endif%}
                     {%if request.user.is_authenticated%}
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
