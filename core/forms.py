@@ -106,11 +106,22 @@ class RegisterStudentForm(forms.ModelForm):
     last_name = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control"})
     )
+    email_regex = RegexValidator(
+        regex=r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+        message="Enter a valid email address.",
+    )
+
     email = forms.EmailField(
-        widget=forms.EmailInput(attrs={"class": "form-control"})
+        widget=forms.EmailInput(attrs={"class": "form-control"}),
+        validators=[email_regex],
+    )
+    phone_regex = RegexValidator(
+        regex=r"^\d{10}$",
+        message="Phone number must be 10 digits and contain digits only.",
     )
     phone_number = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control"})
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        validators=[phone_regex],
     )
 
     class Meta:
