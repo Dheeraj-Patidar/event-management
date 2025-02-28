@@ -117,7 +117,7 @@ class RegisterStudentForm(forms.ModelForm):
     )
     phone_regex = RegexValidator(
         regex=r"^\d{10}$",
-        message="Phone number must be 10 digits and contain digits only.",
+        message="Phone number must be 10 digits and contain digits only."
     )
     phone_number = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control"}),
