@@ -2,6 +2,8 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from .views import (
+    AddEventView,
+    AdminView,
     HomeView,
     LoginPageView,
     LogoutView,
@@ -9,8 +11,7 @@ from .views import (
     StudentProfileView,
     StudentView,
     VerifyEmailView,
-    AdminView,
-    AddEventView,
+    EventRegisterView,
 )
 
 urlpatterns = [
@@ -19,10 +20,11 @@ urlpatterns = [
     path("verify-email/<str:token>/", VerifyEmailView.as_view(), name="verify_email"),
     path("login/", LoginPageView.as_view(), name="login_page"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path("student_dashboard/", StudentView.as_view(), name="student_dashboard"),
-    path("student_profile/", StudentProfileView.as_view(), name="student_profile"),
+    path("student_dashboard", StudentView.as_view(), name="student_dashboard"),
+    path("student_profile", StudentProfileView.as_view(), name="student_profile"),
     path("admin_dashboard", AdminView.as_view(), name="admin_dashboard"),
     path("add_events", AddEventView.as_view(), name="add_event"),
+    path("event_registration", EventRegisterView.as_view(), name="event_register"),
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(template_name="password_reset.html"),

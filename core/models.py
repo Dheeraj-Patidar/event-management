@@ -1,7 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from .managers import UserManager
 from django.utils.timezone import now
+
+from .managers import UserManager
+
 
 class User(AbstractUser):
     ROLE_CHOICES = (("admin", "ADMIN"), ("student", "STUDENT"), ("staff", "STAFF"))
@@ -34,7 +36,18 @@ class Event(models.Model):
     expired = models.BooleanField(default=False)
 
     objects = EventManager()
-    
+
     def save(self, *args, **kwargs):
         self.expired = self.date < now()
         super().save(*args, **kwargs)
+
+
+class RegisteredStudent(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
+    first_name = models.CharField(max_length=100, default=None, null=True)
+    last_name = models.CharField(max_length=100, default=None, null=True)
+    email = models.EmailField(max_length=100, unique=True)
+    phone_number = models.CharField(max_length=100, default=None, null=True)
+    enrolled_date = models.DateField(auto_now_add=True)
+

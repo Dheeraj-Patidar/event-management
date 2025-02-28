@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import RegexValidator
 
-from .models import User, Event
+from .models import Event, User
 
 
 class StudentForm(forms.ModelForm):
@@ -81,12 +81,38 @@ class StudentEditForm(forms.ModelForm):
 
 
 class AddEventForm(forms.ModelForm):
-    event_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    description = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}))
+    event_name = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    description = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    date = forms.DateTimeField(
+        widget=forms.DateTimeInput(
+            attrs={"type": "datetime-local", "class": "form-control"}
+        )
+    )
     location = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    
+
     class Meta:
         model = Event
         fields = ["event_name", "description", "date", "location"]
 
+
+class RegisterStudentForm(forms.ModelForm):
+    first_name = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": "form-control"})
+    )
+    phone_number = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    class Meta:
+        model = Event
+        fields = ["first_name", "last_name", "email", "phone_number"]

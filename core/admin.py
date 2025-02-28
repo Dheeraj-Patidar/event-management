@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Event
+
+from .models import Event, User, RegisteredStudent
 
 
 class CustomUserAdmin(UserAdmin):
@@ -52,15 +53,28 @@ class CustomUserAdmin(UserAdmin):
     )
 
     ordering = ("email",)
+
+
 admin.site.register(User, CustomUserAdmin)
 
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("event_name", "date", "location", "created_at", "expired")  # Display expired status
+    list_display = (
+        "event_name",
+        "date",
+        "location",
+        "created_at",
+        "expired",
+    )
 
-    # def expired(self, obj):
-    #     return obj.expired
-
-    # expired.boolean = True  
 
 admin.site.register(Event, EventAdmin)
+
+
+class RegisteredStudentAdmin(admin.ModelAdmin):
+    list_display = ("first_name", "last_name", "email", "enrolled_date")
+    search_fields = ("enrolled_date", "email")
+    ordering = ("enrolled_date",)
+
+
+admin.site.register(RegisteredStudent, RegisteredStudentAdmin)

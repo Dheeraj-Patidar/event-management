@@ -32,7 +32,7 @@ class UserManager(BaseUserManager):
     #     return user
 
     # def create_superuser(self, email, password=None, **extra_fields):
-    
+
     #     if not password:
     #         raise ValueError("Superuser must have a password")
 
@@ -40,5 +40,3 @@ class UserManager(BaseUserManager):
     #     extra_fields["is_superuser"] = True
 
     #     return self.create_user(email, password, **extra_fields)
-
-
