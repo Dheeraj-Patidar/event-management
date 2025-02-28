@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import RegexValidator
 
-from .models import Event, User
+from .models import Event, User, RegisteredStudent  
 
 
 class StudentForm(forms.ModelForm):
@@ -90,7 +90,7 @@ class AddEventForm(forms.ModelForm):
     date = forms.DateTimeField(
         widget=forms.DateTimeInput(
             attrs={"type": "datetime-local", "class": "form-control"}
-        )
+        ), required=True
     )
     location = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
 
@@ -114,5 +114,5 @@ class RegisterStudentForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Event
+        model = RegisteredStudent  
         fields = ["first_name", "last_name", "email", "phone_number"]

@@ -30,7 +30,7 @@ class EventManager(models.Manager):
 class Event(models.Model):
     event_name = models.CharField(max_length=255, default=None, null=True)
     description = models.CharField(max_length=150, default=None, null=True)
-    date = models.DateTimeField()
+    date = models.DateTimeField(null=False, blank=False)
     location = models.CharField(max_length=255, default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     expired = models.BooleanField(default=False)
@@ -38,16 +38,17 @@ class Event(models.Model):
     objects = EventManager()
 
     def save(self, *args, **kwargs):
-        self.expired = self.date < now()
+        if self.date is not None: 
+            self.expired = self.date < now()
         super().save(*args, **kwargs)
 
 
 class RegisteredStudent(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
+    # student = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    # event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
     first_name = models.CharField(max_length=100, default=None, null=True)
     last_name = models.CharField(max_length=100, default=None, null=True)
     email = models.EmailField(max_length=100, unique=True)
     phone_number = models.CharField(max_length=100, default=None, null=True)
-    enrolled_date = models.DateField(auto_now_add=True)
+    enrolled_date = models.DateTimeField(auto_now_add=True)
 
