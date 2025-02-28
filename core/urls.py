@@ -12,7 +12,9 @@ from .views import (
     StudentView,
     VerifyEmailView,
     EventRegisterView,
-    MyEventView
+    MyEventView,
+    EventView,
+    ExpiredEventView
 )
 
 urlpatterns = [
@@ -26,6 +28,8 @@ urlpatterns = [
     path("admin_dashboard", AdminView.as_view(), name="admin_dashboard"),
     path("add_events", AddEventView.as_view(), name="add_event"),
     path("event_registration/<int:event_id>", EventRegisterView.as_view(), name="event_register"),
+    path("events", EventView.as_view(), name="events"),
+    path("expired_events", ExpiredEventView.as_view(), name="expired_events"),
     path("my_events", MyEventView.as_view(), name="my_events"),
     path(
         "password_reset/",

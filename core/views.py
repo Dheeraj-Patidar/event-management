@@ -150,6 +150,7 @@ class AdminView(TemplateView):
 
 
 class AddEventView(CreateView):
+    """add a event view """
     model = Event
     form_class = AddEventForm
     template_name = "add_event.html"
@@ -186,6 +187,7 @@ class EventRegisterView(CreateView):
     
 
 class MyEventView(LoginRequiredMixin, ListView):
+    """showing all events which are registered by a student"""
     model = RegisteredStudent
     template_name = "myevents.html"
     context_object_name = "events"
@@ -194,3 +196,25 @@ class MyEventView(LoginRequiredMixin, ListView):
         return RegisteredStudent.objects.filter(student=self.request.user)
         
        
+class EventView(ListView):
+    """showing all upcoming events to admin """
+
+    model = Event
+    template_name = "events.html"
+    context_object_name = "events"
+
+    def get_queryset(self):
+        """Return only upcoming events"""
+        return Event.objects.filter(date__gte=now()).order_by("date")
+
+
+class ExpiredEventView(ListView):
+    """showing all Expired events to admin """
+
+    model = Event
+    template_name = "expired_events.html"
+    context_object_name = "events"
+
+    def get_queryset(self):
+        """Return only Expired events"""
+        return Event.objects.filter(expired=True).order_by("date")
