@@ -41,6 +41,7 @@ class Event(models.Model):
         if self.date: 
             self.expired = self.date < now()
         super().save(*args, **kwargs)
+
     def __str__(self):
         return self.event_name
 

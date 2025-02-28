@@ -14,7 +14,9 @@ from .views import (
     EventRegisterView,
     MyEventView,
     EventView,
-    ExpiredEventView
+    ExpiredEventView,
+    StudentAccountsView,
+    ActivateStudentView
 )
 
 urlpatterns = [
@@ -31,6 +33,8 @@ urlpatterns = [
     path("events", EventView.as_view(), name="events"),
     path("expired_events", ExpiredEventView.as_view(), name="expired_events"),
     path("my_events", MyEventView.as_view(), name="my_events"),
+    path("student_accounts", StudentAccountsView.as_view(), name="student_accounts"),
+    path("activate_student/<int:pk>", ActivateStudentView.as_view(), name="activate_student"),
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(template_name="password_reset.html"),

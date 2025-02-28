@@ -155,14 +155,14 @@ class AddEventView(CreateView):
     form_class = AddEventForm
     template_name = "add_event.html"
     success_url = reverse_lazy("add_event")
-
+    
     def form_valid(self, form):
         messages.success(self.request, "Event added successfully!")
         return super().form_valid(form)
-
+    
 
 class EventRegisterView(CreateView):
-    """event registeretion view"""
+    """event registeretion view for student """
     model = RegisteredStudent
     form_class = RegisterStudentForm
     template_name = "event_registration.html"
@@ -218,3 +218,27 @@ class ExpiredEventView(ListView):
     def get_queryset(self):
         """Return only Expired events"""
         return Event.objects.filter(expired=True).order_by("date")
+
+
+class StudentAccountsView(ListView):
+    model = User
+    template_name = "student_accounts.html"
+    # success_url = reverse_lazy("student_accounts")
+    context_object_name = "students"
+
+    def get_queryset(self):
+        return User.objects.filter(role='student')
+
+
+class ActivateStudentView(View):
+    def post(self, request, pk):
+        student = User.objects.get(pk=pk)
+        is_active = request.POST.get("is_active") == "1"
+        student.is_active = is_active
+        student.save()
+
+        # Optional: Show a message
+        status = "activated" if is_active else "deactivated"
+        messages.success(request, f"{student.username} has been {status}.")
+
+        return redirect(reverse_lazy("student_accounts"))

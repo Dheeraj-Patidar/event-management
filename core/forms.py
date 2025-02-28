@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import RegexValidator
-
+from django.utils.timezone import now
 from .models import Event, User, RegisteredStudent  
 
 
@@ -82,7 +82,8 @@ class StudentEditForm(forms.ModelForm):
 
 class AddEventForm(forms.ModelForm):
     event_name = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control"})
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        
     )
     description = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control"})
@@ -93,11 +94,18 @@ class AddEventForm(forms.ModelForm):
         ), required=True
     )
     location = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-
+     
+    def clean_date(self):
+        date = self.cleaned_data.get("date")
+        if date and date < now():
+            raise forms.ValidationError("The event date must be in the future!")
+        return date
+    
     class Meta:
         model = Event
         fields = ["event_name", "description", "date", "location"]
-
+    
+    
 
 class RegisterStudentForm(forms.ModelForm):
     first_name = forms.CharField(
