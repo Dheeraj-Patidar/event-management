@@ -12,6 +12,7 @@ from .views import (
     StudentView,
     VerifyEmailView,
     EventRegisterView,
+    MyEventView
 )
 
 urlpatterns = [
@@ -21,10 +22,11 @@ urlpatterns = [
     path("login/", LoginPageView.as_view(), name="login_page"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("student_dashboard", StudentView.as_view(), name="student_dashboard"),
-    path("student_profile", StudentProfileView.as_view(), name="student_profile"),
+    path("student_profile/", StudentProfileView.as_view(), name="student_profile"),
     path("admin_dashboard", AdminView.as_view(), name="admin_dashboard"),
     path("add_events", AddEventView.as_view(), name="add_event"),
-    path("event_registration", EventRegisterView.as_view(), name="event_register"),
+    path("event_registration/<int:event_id>", EventRegisterView.as_view(), name="event_register"),
+    path("my_events", MyEventView.as_view(), name="my_events"),
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(template_name="password_reset.html"),

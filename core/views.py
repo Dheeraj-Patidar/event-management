@@ -161,30 +161,36 @@ class AddEventView(CreateView):
 
 
 class EventRegisterView(CreateView):
+    """event registeretion view"""
     model = RegisteredStudent
     form_class = RegisterStudentForm
     template_name = "event_registration.html"
     success_url = reverse_lazy("student_dashboard")
 
     def form_valid(self, form):
-        messages.success(self.request, "Registration successfull!")
+        """Automatically assign student and event"""
+        event_id = self.kwargs.get("event_id")
+        event = get_object_or_404(Event, id=event_id)
+        print(event.event_name)
+        if RegisteredStudent.objects.filter(student=self.request.user, event=event).exists():
+            messages.warning(self.request, "You are already registered for this event.")
+            return self.form_invalid(form)
+
+        registration = form.save(commit=False)
+        registration.student = self.request.user
+        registration.event = event
+        registration.save()
+
+        messages.success(self.request, "Registration successful!")
         return super().form_valid(form)
     
-    # def form_valid(self, form):
-    #     """Automatically assign student and event"""
-    #     event_id = self.kwargs.get("event_id")
-    #     event = get_object_or_404(Event, id=event_id)
 
-    #     # Prevent duplicate registration
-    #     if RegisteredStudent.objects.filter(student=self.request.user, event=event).exists():
-    #         messages.warning(self.request, "You are already registered for this event.")
-    #         return self.form_invalid(form)
+class MyEventView(LoginRequiredMixin, ListView):
+    model = RegisteredStudent
+    template_name = "myevents.html"
+    context_object_name = "events"
 
-    #     # Save registration
-    #     registration = form.save(commit=False)
-    #     registration.student = self.request.user
-    #     registration.event = event
-    #     registration.save()
-
-    #     messages.success(self.request, "Registration successful!")
-    #     return super().form_valid(form)
+    def get_queryset(self):
+        return RegisteredStudent.objects.filter(student=self.request.user)
+        
+       

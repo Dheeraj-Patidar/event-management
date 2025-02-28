@@ -38,14 +38,16 @@ class Event(models.Model):
     objects = EventManager()
 
     def save(self, *args, **kwargs):
-        if self.date is not None: 
+        if self.date: 
             self.expired = self.date < now()
         super().save(*args, **kwargs)
+    def __str__(self):
+        return self.event_name
 
 
 class RegisteredStudent(models.Model):
-    # student = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
-    # event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
+    student = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
     first_name = models.CharField(max_length=100, default=None, null=True)
     last_name = models.CharField(max_length=100, default=None, null=True)
     email = models.EmailField(max_length=100, unique=True)

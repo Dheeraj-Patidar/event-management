@@ -1,0 +1,27 @@
+{%extends 'base.html' %}
+
+{%block body%}
+
+<div class="container">
+    <h2 class="text-center my-4">Your Events</h2>
+    
+    <div class="row">
+      {% for event in events %}
+        <div class="col-md-4">
+          <div class="card shadow-sm p-3 mb-4 bg-white rounded">
+            <div class="card-body">
+              <h5 class="card-title ">{{ event.event.event_name }}</h5>
+              <p class="card-text"><strong>Date:</strong> {{ event.event.date|date:"F d, Y H:i" }}</p>
+              <p class="card-text"><strong>Location:</strong> {{ event.event.location }}</p>
+              <p class="card-text">{{ event.event.description }}</p>
+              </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center">You Do Not Have Any Registered Events.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+
+{%endblock%}

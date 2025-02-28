@@ -72,7 +72,7 @@ admin.site.register(Event, EventAdmin)
 
 
 class RegisteredStudentAdmin(admin.ModelAdmin):
-    list_display = ("first_name", "last_name", "email", "enrolled_date")
+    list_display = ("first_name", "last_name", "email", "event", "enrolled_date")
     search_fields = ("enrolled_date", "email")
     ordering = ("enrolled_date",)
 
