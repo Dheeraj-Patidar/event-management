@@ -1,0 +1,55 @@
+{%extends "base.html"%}
+{%block titel%}student profile {%endblock%}
+
+{%block body%}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+    
+            {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} text-center error-success-massage">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+    
+        <h2 class="row justify-content-center">Edit Your Profile</h2>
+        <form method="post">
+            {%csrf_token%}
+             <label for="id_first_name">First Name:</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+                <div class="error-message">
+                    {{ form.first_name.errors.0 }}
+                </div>
+            {% endif %}
+    
+            <label for="id_last_name">Last Name:</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+                <div class="error-message">
+                    {{ form.last_name.errors.0 }}
+                </div>
+            {% endif %}
+    
+            
+    
+            <label for="id_phone_number">Phone Number:</label>
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+                <div class="error-message">
+                    {{ form.phone_number.errors.0 }}
+                </div>
+            {% endif %}
+    
+            
+    
+            <button type="submit" class="btn btn-primary mt-3">Edit</button>
+        </form>
+        </div>
+        </div>
+    </div>
+
+{%endblock%}

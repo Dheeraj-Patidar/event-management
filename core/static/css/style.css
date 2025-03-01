@@ -1,0 +1,12 @@
+.nav-link{
+    font-weight: bold;
+}
+
+.error-message{
+    color: red;
+}
+.card-title{
+    color: red;
+    font-weight: bold;
+    font-size: large;
+}

@@ -1,0 +1,40 @@
+{%extends 'base.html'%}
+
+{%block title%} student dashboard {%endblock%}
+
+
+{%block body%}
+
+{% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} text-center error-success-massage">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+
+            <div class="container">
+                <h2 class="text-center my-4">Upcoming Events</h2>
+                
+                <div class="row">
+                  {% for event in events %}
+                    <div class="col-md-4">
+                      <div class="card shadow-sm p-3 mb-4 bg-white rounded">
+                        <div class="card-body">
+                          <h5 class="card-title ">{{ event.event_name }}</h5>
+                          <p class="card-text"><strong>Date:</strong> {{ event.date|date:"F d, Y H:i" }}</p>
+                          <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
+                          <p class="card-text">{{ event.description }}</p>
+                          <a href="{% url 'event_register' %}"><button type="button" class="btn btn-primary w-100">Register</button></a>
+                        </div>
+                      </div>
+                    </div>
+                  {% empty %}
+                    <p class="text-center">No upcoming events.</p>
+                  {% endfor %}
+                </div>
+              </div>
+
+
+{%endblock%}
