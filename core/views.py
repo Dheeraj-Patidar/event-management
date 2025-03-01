@@ -172,7 +172,7 @@ class EventRegisterView(CreateView):
         """Automatically assign student and event"""
         event_id = self.kwargs.get("event_id")
         event = get_object_or_404(Event, id=event_id)
-        print(event.event_name)
+        
         if RegisteredStudent.objects.filter(student=self.request.user, event=event).exists():
             messages.warning(self.request, "You are already registered for this event.")
             return self.form_invalid(form)
@@ -223,7 +223,6 @@ class ExpiredEventView(ListView):
 class StudentAccountsView(ListView):
     model = User
     template_name = "student_accounts.html"
-    # success_url = reverse_lazy("student_accounts")
     context_object_name = "students"
 
     def get_queryset(self):
@@ -237,7 +236,6 @@ class ActivateStudentView(View):
         student.is_active = is_active
         student.save()
 
-        # Optional: Show a message
         status = "activated" if is_active else "deactivated"
         messages.success(request, f"{student.username} has been {status}.")
 

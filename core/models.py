@@ -38,7 +38,7 @@ class Event(models.Model):
     objects = EventManager()
 
     def save(self, *args, **kwargs):
-        if self.date: 
+        if self.date:
             self.expired = self.date < now()
         super().save(*args, **kwargs)
 

@@ -67,6 +67,10 @@ class EventAdmin(admin.ModelAdmin):
         "expired",
     )
 
+    list_filter = ("event_name", "date", "expired")
+    search_fields = ("event_name", "date")
+    ordering = ("created_at",)
+
 
 admin.site.register(Event, EventAdmin)
 
@@ -75,6 +79,7 @@ class RegisteredStudentAdmin(admin.ModelAdmin):
     list_display = ("first_name", "last_name", "email", "event", "enrolled_date")
     search_fields = ("enrolled_date", "email")
     ordering = ("enrolled_date",)
+    list_filter = ("event", "enrolled_date")
 
 
 admin.site.register(RegisteredStudent, RegisteredStudentAdmin)
