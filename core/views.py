@@ -112,7 +112,7 @@ class LoginPageView(FormView):
             return self.form_invalid(form)
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     """logout active user"""
 
     def get(self, request):
@@ -121,9 +121,9 @@ class LogoutView(View):
         return redirect(reverse_lazy("login_page"))
 
 
-class StudentView(ListView):
+class StudentView(LoginRequiredMixin, ListView):
     """student dashboard"""
-
+    login_url = "/login/"
     model = Event
     template_name = "student_dashboard.html"
     context_object_name = "events"
@@ -135,7 +135,7 @@ class StudentView(ListView):
 
 class StudentProfileView(LoginRequiredMixin, UpdateView):
     """update student profile"""
-
+    login_url = "/login/"
     model = User
     form_class = StudentEditForm
     template_name = "student_profile.html"
@@ -149,12 +149,14 @@ class StudentProfileView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class AdminView(TemplateView):
+class AdminView(LoginRequiredMixin, TemplateView):
     template_name = "admin_dashboard.html"
+    login_url = "/login/"
 
 
-class AddEventView(CreateView):
+class AddEventView(LoginRequiredMixin, CreateView):
     """add a event view """
+    login_url = "/login/"
     model = Event
     form_class = AddEventForm
     template_name = "add_event.html"
@@ -165,8 +167,9 @@ class AddEventView(CreateView):
         return super().form_valid(form)
     
 
-class EventRegisterView(CreateView):
+class EventRegisterView(LoginRequiredMixin, CreateView):
     """event registeretion view for student """
+    login_url = "/login/"
     model = RegisteredStudent
     success_url = reverse_lazy("student_dashboard")
 
@@ -196,6 +199,7 @@ class EventRegisterView(CreateView):
 
 class MyEventView(LoginRequiredMixin, ListView):
     """showing all events which are registered by a student and not expired"""
+    login_url = "/login/"
     model = Event
     template_name = "myevents.html"
     context_object_name = "events"
@@ -206,9 +210,9 @@ class MyEventView(LoginRequiredMixin, ListView):
         return events
         
        
-class EventView(ListView):
+class EventView(LoginRequiredMixin, ListView):
     """showing all upcoming events to admin """
-
+    login_url = "/login/"
     model = Event
     template_name = "events.html"
     context_object_name = "events"
@@ -218,9 +222,9 @@ class EventView(ListView):
         return Event.objects.filter(date__gte=now()).order_by("date")
 
 
-class ExpiredEventView(ListView):
+class ExpiredEventView(LoginRequiredMixin, ListView):
     """showing all Expired events to admin """
-
+    login_url = "/login/"
     model = Event
     template_name = "expired_events.html"
     context_object_name = "events"
@@ -230,7 +234,8 @@ class ExpiredEventView(ListView):
         return Event.objects.filter(expired=True).order_by("date")
 
 
-class StudentAccountsView(ListView):
+class StudentAccountsView(LoginRequiredMixin, ListView):
+    login_url = "/login/"
     model = User
     template_name = "student_accounts.html"
     context_object_name = "students"
@@ -239,7 +244,9 @@ class StudentAccountsView(ListView):
         return User.objects.filter(role='student')
 
 
-class ActivateStudentView(View):
+class ActivateStudentView(LoginRequiredMixin, View):
+    login_url = "/login/"
+
     def post(self, request, pk):
         student = User.objects.get(pk=pk)
         is_active = request.POST.get("is_active") == "True"
@@ -255,7 +262,8 @@ class ActivateStudentView(View):
         return redirect(reverse_lazy("student_accounts"))
 
 
-class MyExpiredEvents(ListView):
+class MyExpiredEvents(LoginRequiredMixin, ListView):
+    login_url = "/login/"
     model = Event
     template_name = "my_expired_events.html"
     context_object_name = "events"
