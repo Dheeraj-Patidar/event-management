@@ -251,3 +251,18 @@ class ActivateStudentView(View):
         messages.success(request, f"{student.username} has been {status}.")
 
         return redirect(reverse_lazy("student_accounts"))
+
+
+class MyExpiredEvents(ListView):
+    model = Event
+    template_name = "my_expired_events.html"
+    context_object_name = "events"
+
+    def get_queryset(self):
+        student = self.request.user
+        registered_event_ids = RegisteredStudent.objects.filter(student = student).values_list('event_id', flat=True)
+        expired_events = Event.objects.filter(id__in=registered_event_ids, date__lt=now())
+
+        return expired_events
+        
+    

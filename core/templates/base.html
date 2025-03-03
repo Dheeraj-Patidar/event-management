@@ -43,6 +43,9 @@
                     {%endif%}
                     {%if request.user.role == 'student'%}
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'my_expired_events' %}">Expired Events</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'student_profile' %}">My Profile</a>
                     </li>
                     <li class="nav-item">
