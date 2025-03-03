@@ -195,13 +195,15 @@ class EventRegisterView(CreateView):
     
 
 class MyEventView(LoginRequiredMixin, ListView):
-    """showing all events which are registered by a student"""
-    model = RegisteredStudent
+    """showing all events which are registered by a student and not expired"""
+    model = Event
     template_name = "myevents.html"
     context_object_name = "events"
 
     def get_queryset(self):
-        return RegisteredStudent.objects.filter(student=self.request.user)
+        event_ids = RegisteredStudent.objects.filter(student=self.request.user).values_list('event_id', flat=True)
+        events = Event.objects.filter(id__in=event_ids, date__gte=now())
+        return events
         
        
 class EventView(ListView):

@@ -13,23 +13,22 @@
 
 
             <div class="container">
-                <h2 class="text-center my-4">Upcoming Events</h2>
+                <h2 class="text-center my-4">Expired Events</h2>
                 
                 <div class="row">
                   {% for event in events %}
                     <div class="col-md-4">
                       <div class="card shadow-sm p-3 mb-4 bg-white rounded">
                         <div class="card-body">
-                          <h5 class="card-title ">{{ event.event_name }}</h5>
+                          <h5 class="expired-card-title ">Expired {{ event.event_name }} Event</h5>
                           <p class="card-text"><strong>Date:</strong> {{ event.date|date:"F d, Y H:i" }}</p>
                           <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
                           <p class="card-text">{{ event.description }}</p>
-                            
-                        </div>
+                            </div>
                       </div>
                     </div>
                   {% empty %}
-                    <p class="text-center">No Expired Events.</p>
+                    <p class="text-center">No Expired events.</p>
                   {% endfor %}
                 </div>
               </div>

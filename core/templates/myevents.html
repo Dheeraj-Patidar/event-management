@@ -10,10 +10,10 @@
         <div class="col-md-4">
           <div class="card shadow-sm p-3 mb-4 bg-white rounded">
             <div class="card-body">
-              <h5 class="card-title ">{{ event.event.event_name }}</h5>
-              <p class="card-text"><strong>Date:</strong> {{ event.event.date|date:"F d, Y H:i" }}</p>
-              <p class="card-text"><strong>Location:</strong> {{ event.event.location }}</p>
-              <p class="card-text">{{ event.event.description }}</p>
+              <h5 class="card-title ">{{ event.event_name }}</h5>
+              <p class="card-text"><strong>Date:</strong> {{ event.date|date:"F d, Y H:i" }}</p>
+              <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
+              <p class="card-text">{{ event.description }}</p>
               </div>
           </div>
         </div>
