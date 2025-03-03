@@ -8,6 +8,7 @@ from django.utils.timezone import now
 from django.views import View
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 from django.views.generic.edit import FormView
+from django.db import IntegrityError
 
 from .forms import AddEventForm, LoginForm, StudentEditForm, StudentForm, RegisterStudentForm
 from .models import Event, RegisteredStudent
@@ -98,6 +99,9 @@ class LoginPageView(FormView):
         password = form.cleaned_data["password"]
 
         user = authenticate(self.request, username=username, password=password)
+        print("ncehfiehifefhke", username, password)
+        
+        print(user)
 
         if user is not None:
             login(self.request, user)
@@ -164,26 +168,30 @@ class AddEventView(CreateView):
 class EventRegisterView(CreateView):
     """event registeretion view for student """
     model = RegisteredStudent
-    form_class = RegisterStudentForm
-    template_name = "event_registration.html"
     success_url = reverse_lazy("student_dashboard")
 
-    def form_valid(self, form):
-        """Automatically assign student and event"""
+    def post(self, request, *args, **kwargs):
         event_id = self.kwargs.get("event_id")
         event = get_object_or_404(Event, id=event_id)
-        
+
         if RegisteredStudent.objects.filter(student=self.request.user, event=event).exists():
             messages.warning(self.request, "You are already registered for this event.")
-            return self.form_invalid(form)
+            return redirect(self.success_url)
 
-        registration = form.save(commit=False)
-        registration.student = self.request.user
-        registration.event = event
-        registration.save()
+        user = self.request.user
+        user_data = RegisteredStudent(
+            student=user,
+            event=event,
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            phone_number=user.phone_number,
+        )
+        user_data.save()
 
         messages.success(self.request, "Registration successful!")
-        return super().form_valid(form)
+        return redirect(self.success_url)
+    
     
 
 class MyEventView(LoginRequiredMixin, ListView):

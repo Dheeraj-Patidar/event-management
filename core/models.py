@@ -15,7 +15,7 @@ class User(AbstractUser):
     username = models.EmailField(max_length=100, unique=True)
     password = models.CharField(max_length=100, default=None, null=True)
     role = models.CharField(max_length=50, choices=ROLE_CHOICES, default="admin")
-
+    
     objects = UserManager()
 
 
@@ -51,7 +51,10 @@ class RegisteredStudent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
     first_name = models.CharField(max_length=100, default=None, null=True)
     last_name = models.CharField(max_length=100, default=None, null=True)
-    email = models.EmailField(max_length=100, unique=True)
+    email = models.EmailField(max_length=100)
     phone_number = models.CharField(max_length=100, default=None, null=True)
     enrolled_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.student}"
 
