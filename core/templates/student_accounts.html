@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div class="container mt-5">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} text-center error-success-massage">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Date Joined</th>
+                    <th>Active</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.username }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.date_joined|date:"Y-m-d H:i" }}</td>
+                    
+                    <td>
+                        {% if student.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'activate_student' student.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="is_active" value="{% if student.is_active %}True{% else %}False{% endif %}">
+                            <button type="submit" class="btn btn-sm {% if student.is_active %}btn-danger{% else %}btn-success{% endif %}">
+                                {% if student.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
