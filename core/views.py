@@ -232,11 +232,14 @@ class StudentAccountsView(ListView):
 class ActivateStudentView(View):
     def post(self, request, pk):
         student = User.objects.get(pk=pk)
-        is_active = request.POST.get("is_active") == "1"
-        student.is_active = is_active
+        is_active = request.POST.get("is_active") == "True"
+        if is_active is True:
+            student.is_active = False
+        else:
+            student.is_active = True
         student.save()
 
-        status = "activated" if is_active else "deactivated"
+        status = "activated" if student.is_active else "deactivated"
         messages.success(request, f"{student.username} has been {status}.")
 
         return redirect(reverse_lazy("student_accounts"))
