@@ -1,0 +1,62 @@
+[
+    {
+        "model": "core.event",
+        "pk": 1,
+        "fields": {
+            "event_name": "Tech Expo 2025",
+            "description": "A global event showcasing the latest tech innovations.",
+            "date": "2025-06-10T10:00:00Z",
+            "location": "New York, USA",
+            "created_at": "2025-03-01T12:00:00Z",
+            "expired": false
+        }
+    },
+    {
+        "model": "core.event",
+        "pk": 2,
+        "fields": {
+            "event_name": "AI & Machine Learning Conference",
+            "description": "A conference focused on advancements in AI and ML.",
+            "date": "2025-08-15T09:30:00Z",
+            "location": "San Francisco, USA",
+            "created_at": "2025-03-01T12:00:00Z",
+            "expired": false
+        }
+    },
+    {
+        "model": "core.event",
+        "pk": 3,
+        "fields": {
+            "event_name": "Music Festival",
+            "description": "An electrifying music festival with top artists.",
+            "date": "2025-07-20T18:00:00Z",
+            "location": "Los Angeles, USA",
+            "created_at": "2025-03-01T12:00:00Z",
+            "expired": false
+        }
+    },
+    {
+        "model": "core.event",
+        "pk": 4,
+        "fields": {
+            "event_name": "Business Networking Meetup",
+            "description": "A networking event for business professionals.",
+            "date": "2025-09-10T15:00:00Z",
+            "location": "London, UK",
+            "created_at": "2025-03-01T12:00:00Z",
+            "expired": false
+        }
+    },
+    {
+        "model": "core.event",
+        "pk": 5,
+        "fields": {
+            "event_name": "Startup Pitch Night",
+            "description": "An event where startups pitch their ideas to investors.",
+            "date": "2025-10-05T17:30:00Z",
+            "location": "Dubai, UAE",
+            "created_at": "2025-03-01T12:00:00Z",
+            "expired": false
+        }
+    }
+]

@@ -8,16 +8,20 @@ from django.utils.timezone import now
 from django.views import View
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 from django.views.generic.edit import FormView
-from django.db import IntegrityError
+# from django.db import IntegrityError
 
 from .forms import (
-    AddEventForm, LoginForm, StudentEditForm,
-    StudentForm, RegisterStudentForm, ResetPasswordForm)
+    AddEventForm,
+    LoginForm,
+    StudentEditForm,
+    StudentForm,
+    ResetPasswordForm,
+)
 from .models import Event, RegisteredStudent
 from .utils import SendVerificationEmailView
 
 User = get_user_model()
-signer = TimestampSigner() #
+signer = TimestampSigner()  #
 
 
 class HomeView(TemplateView):
@@ -51,7 +55,8 @@ class SignupStudentView(FormView):
 
         SendVerificationEmailView().post(self.request, user_id=user_data.id)
         messages.success(
-            self.request, "Signup successful! Check your email to verify your account."
+            self.request,
+            "Signup successful! Check your email to verify your account.",
         )
 
         return super().form_valid(form)
@@ -102,7 +107,7 @@ class LoginPageView(FormView):
 
         user = authenticate(self.request, username=username, password=password)
         print("ncehfiehifefhke", username, password)
-        
+
         print(user)
 
         if user is not None:
@@ -110,7 +115,9 @@ class LoginPageView(FormView):
             messages.success(self.request, "Login successful!")
             return super().form_valid(form)
         else:
-            messages.error(self.request, "Invalid credentials. Please try again.")
+            messages.error(
+                self.request, "Invalid credentials. Please try again."
+            )
             return self.form_invalid(form)
 
 
@@ -125,6 +132,7 @@ class LogoutView(LoginRequiredMixin, View):
 
 class StudentView(LoginRequiredMixin, ListView):
     """student dashboard"""
+
     login_url = "/login/"
     model = Event
     template_name = "student_dashboard.html"
@@ -137,6 +145,7 @@ class StudentView(LoginRequiredMixin, ListView):
 
 class StudentProfileView(LoginRequiredMixin, UpdateView):
     """update student profile"""
+
     login_url = "/login/"
     model = User
     form_class = StudentEditForm
@@ -157,20 +166,22 @@ class AdminView(LoginRequiredMixin, TemplateView):
 
 
 class AddEventView(LoginRequiredMixin, CreateView):
-    """add a event view """
+    """add a event view"""
+
     login_url = "/login/"
     model = Event
     form_class = AddEventForm
     template_name = "add_event.html"
     success_url = reverse_lazy("add_event")
-    
+
     def form_valid(self, form):
         messages.success(self.request, "Event added successfully!")
         return super().form_valid(form)
-    
+
 
 class EventRegisterView(LoginRequiredMixin, CreateView):
-    """event registeretion view for student """
+    """event registeretion view for student"""
+
     login_url = "/login/"
     model = RegisteredStudent
     success_url = reverse_lazy("student_dashboard")
@@ -179,8 +190,12 @@ class EventRegisterView(LoginRequiredMixin, CreateView):
         event_id = self.kwargs.get("event_id")
         event = get_object_or_404(Event, id=event_id)
 
-        if RegisteredStudent.objects.filter(student=self.request.user, event=event).exists():
-            messages.warning(self.request, "You are already registered for this event.")
+        if RegisteredStudent.objects.filter(
+            student=self.request.user, event=event
+        ).exists():
+            messages.warning(
+                self.request, "You are already registered for this event."
+            )
             return redirect(self.success_url)
 
         user = self.request.user
@@ -196,24 +211,27 @@ class EventRegisterView(LoginRequiredMixin, CreateView):
 
         messages.success(self.request, "Registration successful!")
         return redirect(self.success_url)
-    
-    
+
 
 class MyEventView(LoginRequiredMixin, ListView):
     """showing all events which are registered by a student and not expired"""
+
     login_url = "/login/"
     model = Event
     template_name = "myevents.html"
     context_object_name = "events"
 
     def get_queryset(self):
-        event_ids = RegisteredStudent.objects.filter(student=self.request.user).values_list('event_id', flat=True)
+        event_ids = RegisteredStudent.objects.filter(
+            student=self.request.user
+        ).values_list("event_id", flat=True)
         events = Event.objects.filter(id__in=event_ids, date__gte=now())
         return events
-        
-       
+
+
 class EventView(LoginRequiredMixin, ListView):
-    """showing all upcoming events to admin """
+    """showing all upcoming events to admin"""
+
     login_url = "/login/"
     model = Event
     template_name = "events.html"
@@ -225,7 +243,8 @@ class EventView(LoginRequiredMixin, ListView):
 
 
 class ExpiredEventView(LoginRequiredMixin, ListView):
-    """showing all Expired events to admin """
+    """showing all Expired events to admin"""
+
     login_url = "/login/"
     model = Event
     template_name = "expired_events.html"
@@ -243,7 +262,7 @@ class StudentAccountsView(LoginRequiredMixin, ListView):
     context_object_name = "students"
 
     def get_queryset(self):
-        return User.objects.filter(role='student')
+        return User.objects.filter(role="student")
 
 
 class ActivateStudentView(LoginRequiredMixin, View):
@@ -272,8 +291,12 @@ class MyExpiredEvents(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         student = self.request.user
-        registered_event_ids = RegisteredStudent.objects.filter(student = student).values_list('event_id', flat=True)
-        expired_events = Event.objects.filter(id__in=registered_event_ids, date__lt=now())
+        registered_event_ids = RegisteredStudent.objects.filter(
+            student=student
+        ).values_list("event_id", flat=True)
+        expired_events = Event.objects.filter(
+            id__in=registered_event_ids, date__lt=now()
+        )
 
         return expired_events
 
@@ -282,25 +305,28 @@ class ResetPasswordView(LoginRequiredMixin, UpdateView):
     login_url = "/login/"
     model = User
     template_name = "reset_password.html"
-    form_class = ResetPasswordForm  
+    form_class = ResetPasswordForm
     success_url = reverse_lazy("login_page")
 
     def get_object(self, queryset=None):
         """Return the currently logged-in user instead of using pk in URL."""
         return self.request.user
-    
+
     def form_valid(self, form):
         user = self.request.user
-        old_password = form.cleaned_data['old_password']
-        new_password = form.cleaned_data['new_password']
+        old_password = form.cleaned_data["old_password"]
+        new_password = form.cleaned_data["new_password"]
 
         if user.check_password(old_password):
             user.set_password(new_password)
             user.save()
-            # update_session_auth_hash(self.request, user)  # Prevents logout after password change
-            messages.success(self.request, "Password Reset Successfully You Can Login Now")
-            return redirect(self.success_url)  # Redirect to avoid form resubmission
-        
+            messages.success(
+                self.request, "Password Reset Successfully You Can Login Now"
+            )
+            return redirect(
+                self.success_url
+            )  # Redirect to avoid form resubmission
+
         else:
             messages.error(self.request, "Old Password Not Matching")
-            return self.form_invalid(form)  
+            return self.form_invalid(form)

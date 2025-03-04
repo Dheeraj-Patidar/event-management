@@ -23,4 +23,6 @@ class SendVerificationEmailView(View):
 
         send_mail(subject, message, from_email, recipient_list)
 
-        return JsonResponse({"message": "Verification email sent successfully."})
+        return JsonResponse(
+            {"message": "Verification email sent successfully."}
+        )
