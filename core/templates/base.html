@@ -69,7 +69,11 @@
                     {%endif%}
                     {%if request.user.is_authenticated%}
                     <li class="nav-item">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'reset_password' %}">Reset Password</a>
+                        </li>
                         <a class="nav-link" href="/logout">Logout</a>
+                        
                     </li>
                     {%endif%}
                 </ul>

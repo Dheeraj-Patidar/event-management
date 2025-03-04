@@ -10,12 +10,14 @@ from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 from django.views.generic.edit import FormView
 from django.db import IntegrityError
 
-from .forms import AddEventForm, LoginForm, StudentEditForm, StudentForm, RegisterStudentForm
+from .forms import (
+    AddEventForm, LoginForm, StudentEditForm,
+    StudentForm, RegisterStudentForm, ResetPasswordForm)
 from .models import Event, RegisteredStudent
 from .utils import SendVerificationEmailView
 
 User = get_user_model()
-signer = TimestampSigner()
+signer = TimestampSigner() #
 
 
 class HomeView(TemplateView):
@@ -274,5 +276,31 @@ class MyExpiredEvents(LoginRequiredMixin, ListView):
         expired_events = Event.objects.filter(id__in=registered_event_ids, date__lt=now())
 
         return expired_events
-        
+
+
+class ResetPasswordView(LoginRequiredMixin, UpdateView):
+    login_url = "/login/"
+    model = User
+    template_name = "reset_password.html"
+    form_class = ResetPasswordForm  
+    success_url = reverse_lazy("login_page")
+
+    def get_object(self, queryset=None):
+        """Return the currently logged-in user instead of using pk in URL."""
+        return self.request.user
     
+    def form_valid(self, form):
+        user = self.request.user
+        old_password = form.cleaned_data['old_password']
+        new_password = form.cleaned_data['new_password']
+
+        if user.check_password(old_password):
+            user.set_password(new_password)
+            user.save()
+            # update_session_auth_hash(self.request, user)  # Prevents logout after password change
+            messages.success(self.request, "Password Reset Successfully You Can Login Now")
+            return redirect(self.success_url)  # Redirect to avoid form resubmission
+        
+        else:
+            messages.error(self.request, "Old Password Not Matching")
+            return self.form_invalid(form)  

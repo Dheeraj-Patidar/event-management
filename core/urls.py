@@ -17,7 +17,8 @@ from .views import (
     ExpiredEventView,
     StudentAccountsView,
     ActivateStudentView,
-    MyExpiredEvents
+    MyExpiredEvents,
+    ResetPasswordView
 )
 
 urlpatterns = [
@@ -26,17 +27,18 @@ urlpatterns = [
     path("verify-email/<str:token>/", VerifyEmailView.as_view(), name="verify_email"),
     path("login/", LoginPageView.as_view(), name="login_page"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path("student_dashboard", StudentView.as_view(), name="student_dashboard"),
-    path("student_profile/", StudentProfileView.as_view(), name="student_profile"),
-    path("admin_dashboard", AdminView.as_view(), name="admin_dashboard"),
-    path("add_events", AddEventView.as_view(), name="add_event"),
-    path("event_registration/<int:event_id>", EventRegisterView.as_view(), name="event_register"),
-    path("events", EventView.as_view(), name="events"),
-    path("expired_events", ExpiredEventView.as_view(), name="expired_events"),
-    path("my_events", MyEventView.as_view(), name="my_events"),
-    path("student_accounts", StudentAccountsView.as_view(), name="student_accounts"),
-    path("activate_student/<int:pk>", ActivateStudentView.as_view(), name="activate_student"),
-    path("my_expired_events", MyExpiredEvents.as_view(), name="my_expired_events"),
+    path("student-dashboard/", StudentView.as_view(), name="student_dashboard"),
+    path("student-profile/", StudentProfileView.as_view(), name="student_profile"),
+    path("admin-dashboard/", AdminView.as_view(), name="admin_dashboard"),
+    path("add-events/", AddEventView.as_view(), name="add_event"),
+    path("event-registration/<int:event_id>", EventRegisterView.as_view(), name="event_register"),
+    path("events/", EventView.as_view(), name="events"),
+    path("expired-events/", ExpiredEventView.as_view(), name="expired_events"),
+    path("my-events/", MyEventView.as_view(), name="my_events"),
+    path("student-accounts/", StudentAccountsView.as_view(), name="student_accounts"),
+    path("activate-student/<int:pk>/", ActivateStudentView.as_view(), name="activate_student"),
+    path("my-expired-events/", MyExpiredEvents.as_view(), name="my_expired_events"),
+    path("reset-password/", ResetPasswordView.as_view(), name="reset_password"),
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(template_name="password_reset.html"),
