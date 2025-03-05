@@ -1,15 +1,19 @@
 from django import forms
 from django.core.validators import RegexValidator
-
-from .models import Event, User, RegisteredStudent  
+from django.utils.timezone import now
+from .models import Event, User, RegisteredStudent
 
 
 class StudentForm(forms.ModelForm):
     first_name = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    last_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": "form-control"})
+    )
     repassword = forms.CharField(
         widget=forms.PasswordInput(attrs={"class": "form-control"})
     )
@@ -65,7 +69,9 @@ class StudentEditForm(forms.ModelForm):
     first_name = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    last_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
     phone_regex = RegexValidator(
         regex=r"^\d{10}$",
         message="Phone number must be 10 digits and contain digits only.",
@@ -82,7 +88,7 @@ class StudentEditForm(forms.ModelForm):
 
 class AddEventForm(forms.ModelForm):
     event_name = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control"})
+        widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     description = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control"})
@@ -90,9 +96,20 @@ class AddEventForm(forms.ModelForm):
     date = forms.DateTimeField(
         widget=forms.DateTimeInput(
             attrs={"type": "datetime-local", "class": "form-control"}
-        ), required=True
+        ),
+        required=True,
     )
-    location = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+    location = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    def clean_date(self):
+        date = self.cleaned_data.get("date")
+        if date and date < now():
+            raise forms.ValidationError(
+                "The event date must be in the future!"
+            )
+        return date
 
     class Meta:
         model = Event
@@ -125,5 +142,53 @@ class RegisterStudentForm(forms.ModelForm):
     )
 
     class Meta:
-        model = RegisteredStudent  
+        model = RegisteredStudent
         fields = ["first_name", "last_name", "email", "phone_number"]
+
+
+class ResetPasswordForm(forms.ModelForm):
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        required=True,
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        required=True,
+    )
+    password_regex = RegexValidator(
+        regex=r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+        message="Password must have at least 8 characters, one uppercase, one lowercase, one number, and one special character.",
+    )
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        required=True,
+        validators=[password_regex],
+    )
+
+    class Meta:
+        model = User
+        fields = []
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get("old_password")
+        if not self.instance.check_password(old_password):
+            raise forms.ValidationError("Old password is incorrect.")
+        return old_password
+
+    def clean(self):
+        """Ensure new_password and confirm_password match."""
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get("new_password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if (
+            new_password
+            and confirm_password
+            and new_password != confirm_password
+        ):
+            self.add_error(
+                "confirm_password",
+                "New password and confirm password do not match.",
+            )
+
+        return cleaned_data

@@ -5,7 +5,14 @@ from .models import Event, User, RegisteredStudent
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ("email", "first_name", "last_name", "role", "is_active", "is_staff")
+    list_display = (
+        "email",
+        "first_name",
+        "last_name",
+        "role",
+        "is_active",
+        "is_staff",
+    )
 
     list_editable = ("is_active", "is_staff")
 
@@ -17,7 +24,15 @@ class CustomUserAdmin(UserAdmin):
         (None, {"fields": ("email", "password")}),
         (
             "Personal Info",
-            {"fields": ("first_name", "last_name", "phone_number", "role")},
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "username",
+                    "phone_number",
+                    "role",
+                )
+            },
         ),
         (
             "Permissions",
@@ -67,14 +82,25 @@ class EventAdmin(admin.ModelAdmin):
         "expired",
     )
 
+    list_filter = ("event_name", "date", "expired")
+    search_fields = ("event_name", "date")
+    ordering = ("created_at",)
+
 
 admin.site.register(Event, EventAdmin)
 
 
 class RegisteredStudentAdmin(admin.ModelAdmin):
-    list_display = ("first_name", "last_name", "email", "enrolled_date")
+    list_display = (
+        "first_name",
+        "last_name",
+        "email",
+        "event",
+        "enrolled_date",
+    )
     search_fields = ("enrolled_date", "email")
     ordering = ("enrolled_date",)
+    list_filter = ("event", "enrolled_date")
 
 
 admin.site.register(RegisteredStudent, RegisteredStudentAdmin)

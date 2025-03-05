@@ -5,7 +5,17 @@
 .error-message{
     color: red;
 }
+.card-body{
+    background-color: antiquewhite;
+    border-radius: 5px;
+}
+
 .card-title{
+    color: green;
+    font-weight: bold;
+    font-size: large;
+}
+.expired-card-title{
     color: red;
     font-weight: bold;
     font-size: large;

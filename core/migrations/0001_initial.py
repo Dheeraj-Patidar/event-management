@@ -75,7 +75,8 @@ class Migration(migrations.Migration):
                 (
                     "date_joined",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name="date joined"
+                        default=django.utils.timezone.now,
+                        verbose_name="date joined",
                     ),
                 ),
                 (
@@ -91,7 +92,10 @@ class Migration(migrations.Migration):
                     "phone_number",
                     models.CharField(default=None, max_length=100, null=True),
                 ),
-                ("password", models.CharField(default=None, max_length=100, null=True)),
+                (
+                    "password",
+                    models.CharField(default=None, max_length=100, null=True),
+                ),
                 (
                     "role",
                     models.CharField(
