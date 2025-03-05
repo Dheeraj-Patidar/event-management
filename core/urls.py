@@ -22,7 +22,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path("home/", HomeView.as_view(), name="home"),
+    path(" ", HomeView.as_view(), name="home"),
     path("signup/", SignupStudentView.as_view(), name="signup_student"),
     path(
         "verify-email/<str:token>/",
